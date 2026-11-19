@@ -9,12 +9,12 @@ on:
       - "tests/**"
       - "requirements.txt"
       - "pytest.ini"
-      - ".github/workflows/tests.yml"s  
+      - ".github/workflows/tests.yml"
   # Run on pull requests (the "appropriate stage" for review)
   pull_request:
     branches: [main]
     paths:
-      - "*.py"
+      - "src/**"
       - "tests/**"
       - "requirements.txt"
       - "pytest.ini"
