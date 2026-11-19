@@ -1,0 +1,44 @@
+name: Unit Tests
+
+on:
+  # Run on pushes to main only when code or tests change (not README/docs edits)
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "requirements.txt"
+      - "pytest.ini"
+      - ".github/workflows/tests.yml"s  
+  # Run on pull requests (the "appropriate stage" for review)
+  pull_request:
+    branches: [main]
+    paths:
+      - "*.py"
+      - "tests/**"
+      - "requirements.txt"
+      - "pytest.ini"
+      - ".github/workflows/tests.yml"
+  # Allow manual runs
+  workflow_dispatch:
+
+# Cancel an older run of the same branch when a newer push arrives
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - run: pytest -v --cov=. --cov-report=term-missing
